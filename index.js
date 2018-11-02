@@ -2,24 +2,27 @@
 
 function visit() {
   let vc = document.getElementById("visitCount");
-  vc.innerHTML = 123;
-  //let u = "https://sheekswallow.netlify.com/.netlify/functions/visit";
-  let u = 'https://study-sheekswallow.c9users.io:8082/.netlify/functions/visit';
-  console.log('visit', u);
-  // fetch(u, {
-  //   method: "GET",
-  //   mode: "cors",
-  //   cache: "no-cache",
-  //   credentials: "same-origin",
-  //   redirect: "follow", // manual, *follow, error
-  //   referrer: "no-referrer", // no-referrer, *client
-  // })
-  fetch(u)
-  .then(res => res.json())
-  .then(res => {
-    vc.innerHTML = 'res.status';
+  let u = `${process.env.ENDPOINT_PREFIX}/.netlify/functions/visit`;
+console.log(u);
+  fetch(u, {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow", // manual, *follow, error
+    referrer: "no-referrer", // no-referrer, *client
   })
-  .catch(error => console.error('Error:', error));
+  .then(res => {
+    if (res.ok) return res.json();
+    throw new Error('Network response was not ok.');
+  })
+  .then(res => {
+    vc.innerHTML = res.visits;
+  })
+  .catch(error => {
+    vc.innerHTML = '-';
+    console.error(error);
+  });
 }
 
 function createFolder() {
