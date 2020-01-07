@@ -1,45 +1,41 @@
-require('dotenv').config();
-const { Pool } = require('pg');
+exports.handler = (event, context, callback) => {
+  var pg = require('pg');
+    var connection = {
+      host : 'arjuna.db.elephantsql.com',
+      port: 5432,
+      user : 'juicmaka',
+      password : '	okUGxNKWk6CtRezIOHLBHxPbYiGMiQcS',
+      database : 'juicmaka',
+    };
 
-const con = new Pool({
-  connectionString: process.env.DB_URI
-});
-
-const query = (sql, params) => con.connect()
-  .then(client => client.query(sql, params)
-    .then((res) => {
-      client.release();
-      return Promise.resolve(res);
-    })
-    .catch((err) => {
-      client.release();
-      return Promise.reject(err);
-    }));
-
-const insertVisits = async (event) => {
-  const sqlV = `SELECT ip_address FROM log_visits;`;
- // const sqlV = `INSERT INTO log_visits (user_id, user_agent, ip_address) VALUES ('1', '${event.headers['user-agent']}', '${event.headers['x-forwarded-for']}') RETURNING id`;
-  return await query(sqlV);
-};
-
-exports.handler = function(event, context, callback) {
-  //console.log(event);
-  console.log('user-agent', event.headers['user-agent']);
-  console.log('x-forwarded-for', event.headers['x-forwarded-for']);
-  console.log(context);
-  //const {identity, user} = context.clientContext;
-  insertVisits(event)
-  .then(res => {
-    console.log(res.rows[0]);
+  var client = new pg.Client(connection);
+  client.connect();
+  var query = client.query("SELECT ip_address FROM log_visits;");
+  query.then(r => {
     callback(null, {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin" : "*",
-        "Access-Control-Allow-Headers": "Content-Type"
-      },
-      body: JSON.stringify({ visits: res.rows[0] }),
+      body: JSON.stringify(r.rows[0]),
     });
   });
-  
+  query.catch(r => console.log("HERE"));
+  //var connection = {
+    //host : 'testdb.cmzabivlkufu.us-east-2.rds.amazonaws.com',
+    //user : 'derek',
+    //password : 'Aa89snj12',
+    //database : 'testdb',
+  //};
 
+  //try {
+    //var client = new pg.Client(connection);
+    //client.connect();
+    //var query = await client.query("SELECT id FROM users;");
+
+    //query.then(r => console.log(r));
+    //query.catch(r => console.log(r));
+    //client.end();
+    //console.log("xs")
+  //}
+  //catch (err) {
+    //console.log("x", err)
+  //}
 }
