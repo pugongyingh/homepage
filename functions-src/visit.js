@@ -31,14 +31,14 @@ exports.handler = function(event, context, callback) {
   //const {identity, user} = context.clientContext;
   insertVisits(event)
   .then(res => {
-    console.log(res.rows[0].id);
+    console.log(res.rows[0]);
     callback(null, {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin" : "*",
         "Access-Control-Allow-Headers": "Content-Type"
       },
-      body: JSON.stringify({ visits: res.rows[0].id }),
+      body: JSON.stringify({ visits: res.rows[0] }),
     });
   });
   
