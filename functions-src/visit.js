@@ -10,7 +10,7 @@ exports.handler = (event, context, callback) => {
 
   var client = new pg.Client(connection);
   client.connect();
-  var query = client.query("SELECT ip_address FROM log_visits;");
+  var query = client.query("SELECT ip_address FROM log_visits");
   query.then(r => {
     callback(null, {
       statusCode: 200,
