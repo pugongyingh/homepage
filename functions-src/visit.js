@@ -2,8 +2,7 @@ require('dotenv').config();
 const { Pool } = require('pg');
 
 const con = new Pool({
-  connectionString: process.env.DB_URI,
-  ssl: true,
+  connectionString: process.env.DB_URI
 });
 
 const query = (sql, params) => con.connect()
