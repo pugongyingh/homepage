@@ -18,7 +18,8 @@ const query = (sql, params) => con.connect()
     }));
 
 const insertVisits = async (event) => {
-  const sqlV = `INSERT INTO log_visits (user_id, user_agent, ip_address) VALUES ('1', '${event.headers['user-agent']}', '${event.headers['x-forwarded-for']}') RETURNING id`;
+  const sqlV = `SELECT ip_address FROM log_visits;`;
+ // const sqlV = `INSERT INTO log_visits (user_id, user_agent, ip_address) VALUES ('1', '${event.headers['user-agent']}', '${event.headers['x-forwarded-for']}') RETURNING id`;
   return await query(sqlV);
 };
 
